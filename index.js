@@ -2,6 +2,7 @@ import {Client, GatewayIntentBits, Events } from 'discord.js';
 
 import QuoteController from './controllers/QuoteController.js';
 
+
 const client = new Client({
   disableEveryone: false,
   intents: [
