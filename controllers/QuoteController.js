@@ -14,7 +14,7 @@ class QuoteController {
   async addMessage(message, author) {
     try {
       const quote = {
-        quote  : message,
+        quote  : '```' + message + '```',
         author : author
       }
       await QuoteModel.create(quote)
