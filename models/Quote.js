@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose'
-import { dbQuotes } from '../connections/index.js'
+import { dbBot } from '../connections/index.js'
 
 const QuoteSchema = new Schema({
   quote: {
@@ -11,6 +11,6 @@ const QuoteSchema = new Schema({
   }
 }, { timestamps: true })
 
-const QuoteModel = dbQuotes.model('Quote', QuoteSchema)
+const QuoteModel = dbBot.model('Quote', QuoteSchema)
 
 export default QuoteModel

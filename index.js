@@ -2,6 +2,7 @@ import {Client, GatewayIntentBits, Events } from 'discord.js';
 
 import QuoteController from './controllers/QuoteController.js';
 import JokeController from './controllers/JokeController.js';
+import MovieController from './controllers/MovieController.js';
 
 
 const client = new Client({
@@ -37,11 +38,12 @@ client.on(Events.MessageCreate, async msg => {
         msg.channel.send(message);
       });
     }
-    if (msg.content.includes('!agregar') && !msg.content.includes('!agregarTwitchStream')) {
+    if (msg.content.startsWith('!agregar ')) {
       let message = msg.content.substring('!agregar '.length);
       QuoteController.addMessage(message, msg.author.username);
       msg.reply('Mensaje Añadido!!!')
     }
+
     if (msg.content.includes('!dimeloTodo') || msg.content.includes('!dímeloTodo')) {
      QuoteController.getAllMessages().then((messages)=>{
         messages.forEach(el => {
@@ -49,6 +51,29 @@ client.on(Events.MessageCreate, async msg => {
           });
         });
     }
+
+    if (msg.content.startsWith('!agregarPeli ')) {
+      const title = msg.content.substring('!agregarPeli '.length);
+      await MovieController.addMovie(title, msg.author.username);
+      msg.reply('Pelicula Añadida!!!')
+    }
+
+    if (msg.content.trim() == '!listaPelis' ) {
+      const moviesMessage = await MovieController.getMovies();
+      msg.channel.send(moviesMessage);
+    }
+
+    if (msg.content.startsWith('!eliminarPeli ')) {
+      const title = msg.content.substring('!eliminarPeli '.length).trim();
+      const deleteStatus = await MovieController.deleteMovie(title);
+      if(deleteStatus.status) {
+        msg.reply('Pelicula eliminada :c !!!')
+      }
+      else{
+        msg.reply(deleteStatus.text)
+      }
+    }
+    
   }
 });
 
