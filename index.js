@@ -4,6 +4,8 @@ import QuoteController from './controllers/QuoteController.js';
 import JokeController from './controllers/JokeController.js';
 import MovieController from './controllers/MovieController.js';
 
+import {validate_dimelo} from './utils/index.js'
+
 
 const client = new Client({
   disableEveryone: false,
@@ -28,7 +30,12 @@ client.on('ready', () => {
 //onMessage
 client.on(Events.MessageCreate, async msg => {
   if(!msg.author.bot){ 
-    if (msg.content.toLowerCase() === 'dimelo' || msg.content.toLowerCase() === 'dímelo' || msg.content.toLowerCase().includes('dimelo') || msg.content.toLowerCase().includes('dímelo')) {
+    // if (msg.content.toLowerCase() === 'dimelo' || msg.content.toLowerCase() === 'dímelo' || msg.content.toLowerCase().includes('dimelo') || msg.content.toLowerCase().includes('dímelo')) {
+    //   QuoteController.getRandomMessage().then((message)=>{
+    //     msg.channel.send(message);
+    //   });
+    // }
+    if(validate_dimelo(msg.content)) {
       QuoteController.getRandomMessage().then((message)=>{
         msg.channel.send(message);
       });
