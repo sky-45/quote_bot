@@ -40,7 +40,12 @@ client.on(Events.MessageCreate, async msg => {
         msg.channel.send(message);
       });
     }
-    if (msg.content.toLowerCase() === 'chiste' || msg.content.toLowerCase() === 'chiste' ) {
+    if (msg.content.toLowerCase() === 'chiste monse' ) {
+      JokeController.getRandomMonseJoke().then((message)=>{
+        msg.channel.send(message);
+      });
+    }
+    if (msg.content.toLowerCase() === 'chiste' ) {
       JokeController.getRandomJoke().then((message)=>{
         msg.channel.send(message);
       });
