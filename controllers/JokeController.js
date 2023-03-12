@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const {URL_JOKE_API = 'http://localhost:3005'} = process.env
+
 class JokeController {
   async getRandomMonseJoke() {
     try {
@@ -20,7 +22,7 @@ class JokeController {
 
   async getRandomJoke() {
     try {
-      const { data: {setup, punchline} } = await axios.get('http://localhost:3005/jokes/random', { 
+      const { data: {setup, punchline} } = await axios.get(`${URL_JOKE_API}/jokes/random`, { 
         headers: { 
           "Accept": "text/plain",
           "User-Agent": "axios 0.21.1"
