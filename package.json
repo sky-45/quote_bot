@@ -10,12 +10,10 @@
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
     "mongoose": "^6.7.2",
-    "nodemon": "^2.0.20",
-    "pm2": "^5.2.2"
+    "nodemon": "^2.0.20"
   },
   "scripts": {
     "start": "node -r dotenv/config index.js",
-    "start:dev": "nodemon index.js",
-    "deploy": "pm2 start index.js --name eventbooking --node-args=\"-r dotenv/config\""
+    "start:dev": "nodemon index.js"
   }
 }
