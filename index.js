@@ -3,6 +3,7 @@ import {Client, GatewayIntentBits, Events } from 'discord.js';
 import QuoteController from './controllers/QuoteController.js';
 import JokeController from './controllers/JokeController.js';
 import MovieController from './controllers/MovieController.js';
+import CurrencyControler from './controllers/CurrencyControler.js';
 
 import {validate_dimelo} from './utils/index.js'
 
@@ -84,6 +85,11 @@ client.on(Events.MessageCreate, async msg => {
       else{
         msg.reply(deleteStatus.text)
       }
+    }
+    if (msg.content.toLowerCase().includes('!cambio') ) {
+      CurrencyControler.getCurrentExchange().then((message)=>{
+        msg.channel.send(message);
+      });
     }
     
   }
