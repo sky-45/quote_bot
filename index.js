@@ -87,7 +87,7 @@ client.on(Events.MessageCreate, async msg => {
       }
     }
     if ( msg.content.trim().length==11 && msg.content.trim().substring(0,8) == '!cambio ') {
-      CurrencyControler.getCurrentExchangeOthers(msg.content.trim().substring(8,11)).then((message)=>{
+      CurrencyControler.getCurrentExchangeOthers(msg.content.trim().substring(8,11).toUpperCase()).then((message)=>{
         msg.channel.send(message);
       });
     }
