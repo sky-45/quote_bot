@@ -86,8 +86,13 @@ client.on(Events.MessageCreate, async msg => {
         msg.reply(deleteStatus.text)
       }
     }
-    if (msg.content.toLowerCase().includes('!cambio') ) {
-      CurrencyControler.getCurrentExchange().then((message)=>{
+    if ( msg.content.trim().length==11 && msg.content.trim().substring(0,8) == '!cambio ') {
+      CurrencyControler.getCurrentExchangeOthers(msg.content.trim().substring(8,11)).then((message)=>{
+        msg.channel.send(message);
+      });
+    }
+    else if (msg.content.trim().toLowerCase()== '!cambio') {
+      CurrencyControler.getCurrentExchangeUSD().then((message)=>{
         msg.channel.send(message);
       });
     }
