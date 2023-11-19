@@ -86,12 +86,12 @@ client.on(Events.MessageCreate, async msg => {
         msg.reply(deleteStatus.text)
       }
     }
-    if ( msg.content.trim().length==11 && msg.content.trim().substring(0,8) == '!cambio ') {
+    if ( msg.content.trim().length==11 && msg.content.trim().toLowerCase().substring(0,8) == '!cambio ' && msg.content.trim().toLowerCase() !== '!cambio usd') {
       CurrencyControler.getCurrentExchangeOthers(msg.content.trim().substring(8,11).toUpperCase()).then((message)=>{
         msg.channel.send(message);
       });
     }
-    else if (msg.content.trim().toLowerCase()== '!cambio') {
+    else if (msg.content.trim().toLowerCase()== '!cambio' || msg.content.trim().toLowerCase() == '!cambio usd') {
       CurrencyControler.getCurrentExchangeUSD().then((message)=>{
         msg.channel.send(message);
       });

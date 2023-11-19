@@ -18,7 +18,7 @@ class CurrencyController {
     try {
       const { data: {compra, venta, fecha} } = await axios.get(`${URL_CURRENCY_SUNAT_API}`, {})
       const EUR_exchange = await this.getExchangeEUR()
-      return '```' + `TC hoy ${fecha}: Compra = ${compra} - Venta = ${venta}, EUR = ${EUR_exchange}!` + '```' 
+      return '```' + `TC SBS hoy ${fecha}: Compra = ${compra} - Venta = ${venta}, EUR = ${EUR_exchange}!` + '```' 
     } catch (error) {
       console.log('error', error)
 
@@ -36,7 +36,7 @@ class CurrencyController {
       })
 
       if(data_cached?.createdAt) {
-        return this.getExhangeRate(COIN, data_cached.exchanges)
+        return this.getExhangeRate(COIN, data_cached.exchanges)[0]
       }
       else {
         const { data: {result,base_code,conversion_rates={}} } = await axios.get(`${URL_CURRENCY_OTHERS_API}`, { 
@@ -56,7 +56,7 @@ class CurrencyController {
           createdAt: new Date(day)
         }
         newExchange = await ExhangeModel.create(newExchange)
-        return  this.getExhangeRate(COIN, newExchange.exchanges)
+        return  this.getExhangeRate(COIN, newExchange.exchanges)[0]
       }
     } catch (error) {
       console.log('error', error)
@@ -78,9 +78,9 @@ class CurrencyController {
       
       if(data_cached?.createdAt){
         console.log('1')
-        const exchangeRateLabel = this.getExhangeRate(COIN, data_cached.exchanges)
+        const [exchangeRateLabel_1,exchangeRateLabel_2] = this.getExhangeRate(COIN, data_cached.exchanges)
 
-        return  '```' + `TC hoy ${day.format('YYYY-MM-DD')} de PEN a ${COIN}: ${exchangeRateLabel} !` + '```'
+        return  '```' + `TC hoy ${day.format('YYYY-MM-DD')} de ${COIN} a PEN: ${exchangeRateLabel_1}, PEN a ${COIN}: ${exchangeRateLabel_2}!` + '```'
       }
       else {
         console.log('2')
@@ -104,9 +104,9 @@ class CurrencyController {
         }
         newExchange = await ExhangeModel.create(newExchange)
         // get data from Object document
-        const exchangeRateLabel = this.getExhangeRate(COIN, newExchange.exchanges)
+        const [exchangeRateLabel_1,exchangeRateLabel_2] = this.getExhangeRate(COIN, data_cached.exchanges)
         
-        return '```' + `TC hoy ${day.format('YYYY-MM-DD')} de PEN a ${COIN}: ${exchangeRateLabel} !` + '```'
+        return  '```' + `TC hoy ${day.format('YYYY-MM-DD')} de ${COIN} a PEN: ${exchangeRateLabel_1}, PEN a ${COIN}: ${exchangeRateLabel_2}!` + '```'
       }
     } catch (error) {
       console.log('error', error)
@@ -135,12 +135,15 @@ class CurrencyController {
 
   getExhangeRate(COIN, exchanges){
     try {
+      console.log(COIN)
       const rateToPEN = exchanges.find((val)=>val.label == 'PEN') // usd to PEN
       const rateToOther = exchanges.find((val)=>val.label == COIN) // usd to ARF
 
+      console.log(rateToPEN, rateToOther)
+
       if (!rateToPEN?.rate || !rateToOther?.rate) throw Error
 
-      return (rateToPEN.rate/rateToOther.rate).toFixed(2)
+      return [(rateToPEN.rate/rateToOther.rate).toFixed(3), (rateToOther.rate/rateToPEN.rate).toFixed(3)]
       
     } catch (error) {
       console.log('error', error)
