@@ -6,6 +6,9 @@ import MovieController from './controllers/MovieController.js';
 import CurrencyControler from './controllers/CurrencyControler.js';
 
 import {validate_dimelo} from './utils/index.js'
+import BirthdayControler from './controllers/BirthdayControler.js';
+
+import {CronJob as cron} from 'cron'
 
 
 const client = new Client({
@@ -27,6 +30,28 @@ client.on('ready', () => {
         }
     });
 });
+
+
+
+
+const sendMessageDaily = new cron('0 0,9,13,21 * * *', async function() {
+  const guild = client.guilds.cache.get('366511816358232072');
+
+  if (guild) {
+    const ch = guild.channels.cache.get('366511816358232075');
+    const birthdays = await BirthdayControler.getTodayBirthdays();
+
+    for (let user of birthdays) {
+      await ch.send({ 
+        content: '@everyone Feliciten a ' + user + ' por su cumple !'
+      }).catch(err => {
+          console.error(err);
+      });
+    }
+  }
+});
+sendMessageDaily.start();
+
 
 //onMessage
 client.on(Events.MessageCreate, async msg => {
@@ -95,6 +120,11 @@ client.on(Events.MessageCreate, async msg => {
       CurrencyControler.getCurrentExchangeUSD().then((message)=>{
         msg.channel.send(message);
       });
+    }
+
+    if (msg.content.startsWith('!agregarCumple' )) {
+      const birhtdayMessage = await BirthdayControler.addBirthday(msg.content, msg.author.username);
+      msg.channel.send(birhtdayMessage);
     }
     
   }

@@ -77,13 +77,11 @@ class CurrencyController {
       })
       
       if(data_cached?.createdAt){
-        console.log('1')
         const [exchangeRateLabel_1,exchangeRateLabel_2] = this.getExhangeRate(COIN, data_cached.exchanges)
 
         return  '```' + `TC hoy ${day.format('YYYY-MM-DD')} de ${COIN} a PEN: ${exchangeRateLabel_1}, PEN a ${COIN}: ${exchangeRateLabel_2}!` + '```'
       }
       else {
-        console.log('2')
         // if data not in DB get from API
         const { data: {result,base_code,conversion_rates={}} } = await axios.get(`${URL_CURRENCY_OTHERS_API}`, { 
           headers: { 
@@ -135,11 +133,8 @@ class CurrencyController {
 
   getExhangeRate(COIN, exchanges){
     try {
-      console.log(COIN)
       const rateToPEN = exchanges.find((val)=>val.label == 'PEN') // usd to PEN
       const rateToOther = exchanges.find((val)=>val.label == COIN) // usd to ARF
-
-      console.log(rateToPEN, rateToOther)
 
       if (!rateToPEN?.rate || !rateToOther?.rate) throw Error
 
