@@ -34,24 +34,42 @@ client.on('ready', () => {
 
 
 
-const sendMessageDaily = new cron('0 0,9,13,21 * * *', async function() {
+const sendMessageDailyEveryone = new cron('0 0 * * *', async function() {
   const guild = client.guilds.cache.get('366511816358232072');
 
   if (guild) {
     const ch = guild.channels.cache.get('366511816358232075');
     const birthdays = await BirthdayControler.getTodayBirthdays();
 
-    for (let user of birthdays) {
+    for (let elem of birthdays) {
       await ch.send({ 
-        content: '@everyone Feliciten a ' + user + ' por su cumple !'
+        content: '@everyone Monses feliciten a ' + elem.user + ' por sus terribles ' + elem.years +' años !'
       }).catch(err => {
           console.error(err);
       });
     }
   }
 });
-sendMessageDaily.start();
 
+const sendMessageDailySimple = new cron('0 10,18 * * *', async function() {
+  const guild = client.guilds.cache.get('366511816358232072');
+
+  if (guild) {
+    const ch = guild.channels.cache.get('366511816358232075');
+    const birthdays = await BirthdayControler.getTodayBirthdays();
+
+    for (let elem of birthdays) {
+      await ch.send({ 
+        content: '```' + 'Monses Feliciten a ' + elem.user + ' por sus terribles ' + elem.years +' años !' + '```'
+      }).catch(err => {
+          console.error(err);
+      });
+    }
+  }
+});
+
+sendMessageDailyEveryone.start();
+sendMessageDailySimple.start();
 
 //onMessage
 client.on(Events.MessageCreate, async msg => {
@@ -125,6 +143,23 @@ client.on(Events.MessageCreate, async msg => {
     if (msg.content.startsWith('!agregarCumple' )) {
       const birhtdayMessage = await BirthdayControler.addBirthday(msg.content, msg.author.username);
       msg.channel.send(birhtdayMessage);
+    }
+    if (msg.content.trim() == '!saludarCumple' ) {
+      const birhtdayMessages = await BirthdayControler.getTodayBirthdays();
+
+      for (let elem of birhtdayMessages) {
+        await msg.channel.send('```' + 'Monses Feliciten a ' + elem.user + ' por sus terribles ' + elem.years +' años !' + '```');
+      }
+    }
+    if (msg.content.trim() == '!cumples') {
+      const birhtdayMessages = await BirthdayControler.getAllBirthdays();
+      const finalMessage = 'Lista de cumpleaños: \n' + birhtdayMessages.map(elem=>{
+        return '    '+elem.user + ' cumple ' + elem.years +' años el ' + elem.formatedDate
+      }).join('\n')
+      msg.channel.send('```' + finalMessage + '```')
+      // for (let elem of birhtdayMessages) {
+      //   await msg.channel.send('```' + elem.user + ' cumple ' + elem.years +' años el ' + elem.formatedDate + '```');
+      // }
     }
     
   }

@@ -5,15 +5,48 @@ import utc from 'dayjs/plugin/utc.js'
 dayjs.extend(utc)
 
 class BirthdayController {
+  async getAllBirthdays() {
+    try {
+      const day = dayjs()
+
+      const allBirthdays = await BirthdayModel.find().sort({month: 1, day: 1}).lean()
+      
+      return allBirthdays.map(el=> {
+        return {
+          user: el.user,
+          years: day.get('year') - el.year,
+          formatedDate: ' ' + el.day + ' de ' + MONTHS_LABEL[el.month]
+        }
+      })
+    } catch (error) {
+      console.log('error getting birthdays')
+      return []
+    }
+  }
+
+  async notifyBirthday() {
+    try {
+      const birthdays = await this.getTodayBirthdays();
+
+    } catch (error) {
+      console.log('error getting birthdays')
+    }
+  }
   async getTodayBirthdays() {
     try {
       const day = dayjs()
+
       const todayBirthdays = await BirthdayModel.find({
         month:day.get('month') + 1,
         day:day.get('date')
       }).lean()
       
-      return todayBirthdays.map(el=> el.user)
+      return todayBirthdays.map(el=> {
+        return {
+          user: el.user,
+          years: day.get('year') - el.year
+        }
+      })
     } catch (error) {
       console.log('error getting birthdays')
       return []
@@ -61,6 +94,21 @@ class BirthdayController {
       throw Error
     }
   }
+}
+
+const MONTHS_LABEL = {
+  1:'Enero',
+  2:'Febrero',
+  3:'Marzo',
+  4:'Abril',
+  5:'Mayo',
+  6:'Junio',
+  7:'Julio',
+  8:'Agosto',
+  9:'Setiembre',
+  10:'Octubre',
+  11:'Noviembre',
+  12:'Diciembre'  
 }
 
 export default new BirthdayController()

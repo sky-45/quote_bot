@@ -9,6 +9,9 @@ ENV DISCORD_TOKEN $DISCORD_TOKEN
 ARG URL_JOKE_API
 ENV URL_JOKE_API $URL_JOKE_API
 
+RUN apk add --no-cache tzdata
+ENV TZ America/Lima
+
 WORKDIR /app
 COPY . .
 RUN yarn
