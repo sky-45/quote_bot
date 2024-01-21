@@ -2,8 +2,12 @@ import {Client, GatewayIntentBits, Events } from 'discord.js';
 
 import QuoteController from './controllers/QuoteController.js';
 import JokeController from './controllers/JokeController.js';
-import MovieController from './controllers/MovieController.js';
-import CurrencyControler from './controllers/CurrencyControler.js';
+
+import {MovieActuator} from './actuators/MovieActuator.js';
+import {CurrencyActuator} from './actuators/CurrencyActuator.js';
+import {BirthdayActuator} from './actuators/BirthdayActuator.js';
+import {MeassureActuator} from './actuators/MeassureActuator.js';
+
 
 import {validate_dimelo} from './utils/index.js'
 import BirthdayControler from './controllers/BirthdayControler.js';
@@ -74,11 +78,6 @@ sendMessageDailySimple.start();
 //onMessage
 client.on(Events.MessageCreate, async msg => {
   if(!msg.author.bot){ 
-    // if (msg.content.toLowerCase() === 'dimelo' || msg.content.toLowerCase() === 'dímelo' || msg.content.toLowerCase().includes('dimelo') || msg.content.toLowerCase().includes('dímelo')) {
-    //   QuoteController.getRandomMessage().then((message)=>{
-    //     msg.channel.send(message);
-    //   });
-    // }
     if(validate_dimelo(msg.content)) {
       QuoteController.getRandomMessage().then((message)=>{
         msg.channel.send(message);
@@ -108,59 +107,21 @@ client.on(Events.MessageCreate, async msg => {
         });
     }
 
-    if (msg.content.startsWith('!agregarPeli ')) {
-      const title = msg.content.substring('!agregarPeli '.length);
-      await MovieController.addMovie(title, msg.author.username);
-      msg.reply('Pelicula Añadida!!!')
-    }
+    // actuator of pelis get message
+    if(msg.content.toLowerCase().includes('peli'))
+      await MovieActuator(msg)
 
-    if (msg.content.trim() == '!listaPelis' ) {
-      const moviesMessage = await MovieController.getMovies();
-      msg.channel.send(moviesMessage);
-    }
+    // actuator of exchange info
+    if(msg.content.toLowerCase().includes('cambio'))
+      await CurrencyActuator(msg)
 
-    if (msg.content.startsWith('!eliminarPeli ')) {
-      const title = msg.content.substring('!eliminarPeli '.length).trim();
-      const deleteStatus = await MovieController.deleteMovie(title);
-      if(deleteStatus.status) {
-        msg.reply('Pelicula eliminada :c !!!')
-      }
-      else{
-        msg.reply(deleteStatus.text)
-      }
-    }
-    if ( msg.content.trim().length==11 && msg.content.trim().toLowerCase().substring(0,8) == '!cambio ' && msg.content.trim().toLowerCase() !== '!cambio usd') {
-      CurrencyControler.getCurrentExchangeOthers(msg.content.trim().substring(8,11).toUpperCase()).then((message)=>{
-        msg.channel.send(message);
-      });
-    }
-    else if (msg.content.trim().toLowerCase()== '!cambio' || msg.content.trim().toLowerCase() == '!cambio usd') {
-      CurrencyControler.getCurrentExchangeUSD().then((message)=>{
-        msg.channel.send(message);
-      });
-    }
+    // actuator of birthdaysss
+    if(msg.content.toLowerCase().includes('cumple'))
+      await BirthdayActuator(msg)
 
-    if (msg.content.startsWith('!agregarCumple' )) {
-      const birhtdayMessage = await BirthdayControler.addBirthday(msg.content, msg.author.username);
-      msg.channel.send(birhtdayMessage);
-    }
-    if (msg.content.trim() == '!saludarCumple' ) {
-      const birhtdayMessages = await BirthdayControler.getTodayBirthdays();
-
-      for (let elem of birhtdayMessages) {
-        await msg.channel.send('```' + 'Monses Feliciten a ' + elem.user + ' por sus terribles ' + elem.years +' años !' + '```');
-      }
-    }
-    if (msg.content.trim() == '!cumples') {
-      const birhtdayMessages = await BirthdayControler.getAllBirthdays();
-      const finalMessage = 'Lista de cumpleaños: \n' + birhtdayMessages.map(elem=>{
-        return '    '+elem.user + ' cumple ' + elem.years +' años el ' + elem.formatedDate
-      }).join('\n')
-      msg.channel.send('```' + finalMessage + '```')
-      // for (let elem of birhtdayMessages) {
-      //   await msg.channel.send('```' + elem.user + ' cumple ' + elem.years +' años el ' + elem.formatedDate + '```');
-      // }
-    }
+    // actuator of memideee
+    if(msg.content.toLowerCase().includes('mide'))
+      await MeassureActuator(msg)
     
   }
 });

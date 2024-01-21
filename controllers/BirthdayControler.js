@@ -15,7 +15,9 @@ class BirthdayController {
         return {
           user: el.user,
           years: day.get('year') - el.year,
-          formatedDate: ' ' + el.day + ' de ' + MONTHS_LABEL[el.month]
+          formatedDate: ' ' + el.day + ' de ' + MONTHS_LABEL[el.month],
+          month:el.month,
+          day:el.day
         }
       })
     } catch (error) {
@@ -92,6 +94,28 @@ class BirthdayController {
 
     } catch (error) {
       throw Error
+    }
+  }
+  formatAllBirthdays(birhtdayMessages) {
+    try {
+      const day = dayjs()
+      const current_day = day.get('date')
+      const current_month = day.get('month') + 1
+
+      const finalMessage = 'Lista de cumpleaños: \n' + birhtdayMessages.map(elem=>{
+        // console.log(elem.user, elem.month, elem.day, current_month, current_day)
+        if(elem.month > current_month || (elem.month == current_month && elem.day > current_day)) {
+          return '    '+elem.user + ' cumplira ' + elem.years +' años el ' + elem.formatedDate
+        }
+        else {
+          return '    '+elem.user + ' cumplio ' + elem.years +' años el ' + elem.formatedDate
+        }
+        
+      }).join('\n')
+
+      return finalMessage
+    } catch (error) {
+      
     }
   }
 }
