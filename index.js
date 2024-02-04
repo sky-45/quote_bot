@@ -7,6 +7,7 @@ import {MovieActuator} from './actuators/MovieActuator.js';
 import {CurrencyActuator} from './actuators/CurrencyActuator.js';
 import {BirthdayActuator} from './actuators/BirthdayActuator.js';
 import {MeassureActuator} from './actuators/MeassureActuator.js';
+import {ChatActuator} from './actuators/ChatActuator.js'
 
 
 import {validate_dimelo} from './utils/index.js'
@@ -123,6 +124,10 @@ client.on(Events.MessageCreate, async msg => {
     if(msg.content.toLowerCase().includes('mide'))
       await MeassureActuator(msg)
     
+    // actuator of chatgpt
+    if(msg.content.startsWith('!monsebot '))
+      await ChatActuator(msg)
+  
   }
 });
 
