@@ -8,12 +8,13 @@ import {CurrencyActuator} from './actuators/CurrencyActuator.js';
 import {BirthdayActuator} from './actuators/BirthdayActuator.js';
 import {MeassureActuator} from './actuators/MeassureActuator.js';
 import {ChatActuator} from './actuators/ChatActuator.js'
-
+import {TwitchActuator} from './actuators/TwitchActuator.js'
 
 import {validate_dimelo} from './utils/index.js'
 import BirthdayControler from './controllers/BirthdayControler.js';
 
 import {CronJob as cron} from 'cron'
+import TwitchController from './controllers/TwitchController.js';
 
 
 const client = new Client({
@@ -73,8 +74,22 @@ const sendMessageDailySimple = new cron('0 10,18 * * *', async function() {
   }
 });
 
+const sendStreamReminder = new cron('*/10 * * * * *', async function() {
+  const guild = client.guilds.cache.get('366511816358232072');
+
+  if (guild) {
+    const ch = guild.channels.cache.get('366521521117593600');
+
+    const liveChannels = await TwitchController.getLiveChannels();
+
+    if(liveChannels.length)
+      await TwitchController.notifyChannelsLive(liveChannels, ch)
+  }
+});
+
 sendMessageDailyEveryone.start();
 sendMessageDailySimple.start();
+sendStreamReminder.start();
 
 //onMessage
 client.on(Events.MessageCreate, async msg => {
@@ -127,6 +142,9 @@ client.on(Events.MessageCreate, async msg => {
     // actuator of chatgpt
     if(msg.content.startsWith('!monsebot '))
       await ChatActuator(msg)
+
+    if(msg.content.startsWith('!addStream '))
+      await TwitchActuator(msg)
   
   }
 });
