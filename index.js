@@ -12,6 +12,7 @@ import {TwitchActuator} from './actuators/TwitchActuator.js'
 
 import {validate_dimelo} from './utils/index.js'
 import BirthdayControler from './controllers/BirthdayControler.js';
+import PointsController from './controllers/PointsController.js';
 
 import {CronJob as cron} from 'cron'
 import TwitchController from './controllers/TwitchController.js';
@@ -94,6 +95,20 @@ sendStreamReminder.start();
 //onMessage
 client.on(Events.MessageCreate, async msg => {
   if(!msg.author.bot){ 
+    // gpoitns discorddd 
+    if (!msg.content.startsWith('!'))
+      PointsController.addPoints(msg.author.id)
+
+    if (msg.content.toLowerCase() === '!gpoints' ) {
+      PointsController.getPoints(msg.author.id).then((points)=>{
+        msg.channel.send(`<@${msg.author.id}> tiene ${points} gpoints <:navigab:657774495515410443> `);
+      });
+
+      PointsController.getPoints(msg.author.id)
+      return 
+    }
+
+
     if(validate_dimelo(msg.content)) {
       QuoteController.getRandomMessage().then((message)=>{
         msg.channel.send(message);

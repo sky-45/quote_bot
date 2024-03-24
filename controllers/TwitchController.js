@@ -141,7 +141,7 @@ class TwitchController {
 
       for(const livechannel of channelsPendingNotify){
         await chat.send({ 
-          content: 'Monses ' + livechannel + ' esta en vivo: https://twitch.tv/' + livechannel +' !'
+          content: '@everyone  Monses ' + livechannel + ' esta en vivo: https://twitch.tv/' + livechannel +' !'
         }).catch(err => {
             console.error(err);
         });
