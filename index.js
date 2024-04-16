@@ -9,6 +9,7 @@ import {BirthdayActuator} from './actuators/BirthdayActuator.js';
 import {MeassureActuator} from './actuators/MeassureActuator.js';
 import {ChatActuator} from './actuators/ChatActuator.js'
 import {TwitchActuator} from './actuators/TwitchActuator.js'
+import { PointsActuator } from './actuators/PointsActuator.js';
 
 import {validate_dimelo} from './utils/index.js'
 import BirthdayControler from './controllers/BirthdayControler.js';
@@ -99,14 +100,13 @@ client.on(Events.MessageCreate, async msg => {
     if (!msg.content.startsWith('!'))
       PointsController.addPoints(msg.author.id)
 
-    if (msg.content.toLowerCase() === '!gpoints' ) {
-      PointsController.getPoints(msg.author.id).then((points)=>{
-        msg.channel.send(`<@${msg.author.id}> tiene ${points} gpoints <:navigab:657774495515410443> `);
-      });
-
-      PointsController.getPoints(msg.author.id)
-      return 
-    }
+    // if (msg.content.toLowerCase() === '!gpoints' ) {
+    //   PointsController.getPoints(msg.author.id).then((points)=>{
+    //     msg.channel.send(`<@${msg.author.id}> tiene ${points} gpoints <:navigab:657774495515410443> `);
+    //   });
+    //   PointsController.getPoints(msg.author.id)
+    //   return 
+    // }
 
 
     if(validate_dimelo(msg.content)) {
@@ -141,6 +141,10 @@ client.on(Events.MessageCreate, async msg => {
     // actuator of pelis get message
     if(msg.content.toLowerCase().includes('peli'))
       await MovieActuator(msg)
+
+      // actuator of pelis get message
+    if(msg.content.toLowerCase().includes('gpoints') || msg.content.toLowerCase() === '!leaderboard')
+      await PointsActuator(msg, client)
 
     // actuator of exchange info
     if(msg.content.toLowerCase().includes('cambio'))

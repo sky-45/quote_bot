@@ -96,6 +96,7 @@ class BirthdayController {
       throw Error
     }
   }
+  
   formatAllBirthdays(birhtdayMessages) {
     try {
       const day = dayjs()
