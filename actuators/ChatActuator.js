@@ -6,6 +6,10 @@ const {URL_CHAT_API = 'http://localhost:11434/api/generate'} = process.env
 
 export const ChatActuator = async (msg)=> {
   try {
+    // get current model to get data from 
+
+    const model = await RedisController.getRedis('currentModelLLM')
+    if(!model) await RedisController.setRedis('currentModelLLM', 'llama3:8b')
     // check if query is getting procesed 
     let checkRunning = await RedisController.getRedis('runningChatBot')
 
@@ -21,7 +25,7 @@ export const ChatActuator = async (msg)=> {
     const question = msg.content.trim().substring(10,msg.content.length) || ''
     msg.channel.sendTyping()
     const { data: joke } = await axios.post(URL_CHAT_API,
-      `{\n  "model": "stablelm2",\n  "prompt": "${question}",\n  "stream": false\n}`,
+      `{\n  "model": "${model}",\n  "prompt": "${question}",\n  "stream": false\n}`,
       {
         headers: { 
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -36,6 +40,6 @@ export const ChatActuator = async (msg)=> {
     
   } catch (error) {
     console.log(error)
-    await msg.channel.send('``` Chatbot en mantenimiento :c ```')
+    await msg.channel.send('``` No quiero :c ```')
   }
 }

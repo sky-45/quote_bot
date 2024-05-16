@@ -111,17 +111,20 @@ client.on(Events.MessageCreate, async msg => {
 
     if(validate_dimelo(msg.content)) {
       QuoteController.getRandomMessage().then((message)=>{
-        msg.channel.send(message);
+        if(message)
+          msg.channel.send(message);
       });
     }
     if (msg.content.toLowerCase() === 'chiste monse' ) {
       JokeController.getRandomMonseJoke().then((message)=>{
-        msg.channel.send(message);
+        if(message)
+          msg.channel.send(message);
       });
     }
     if (msg.content.toLowerCase() === 'chiste' ) {
       JokeController.getRandomJoke().then((message)=>{
-        msg.channel.send(message);
+        if(message)
+          msg.channel.send(message);
       });
     }
     if (msg.content.startsWith('!agregar ')) {
@@ -133,6 +136,7 @@ client.on(Events.MessageCreate, async msg => {
     if (msg.content.includes('!dimeloTodo') || msg.content.includes('!dímeloTodo')) {
      QuoteController.getAllMessages().then((messages)=>{
         messages.forEach(el => {
+          if(el)
             msg.channel.send(el);
           });
         });
