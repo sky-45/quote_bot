@@ -96,18 +96,10 @@ sendStreamReminder.start();
 //onMessage
 client.on(Events.MessageCreate, async msg => {
   if(!msg.author.bot){ 
+    // console.log(JSON.stringify(msg,null,2))
     // gpoitns discorddd 
     if (!msg.content.startsWith('!'))
       PointsController.addPoints(msg.author.id)
-
-    // if (msg.content.toLowerCase() === '!gpoints' ) {
-    //   PointsController.getPoints(msg.author.id).then((points)=>{
-    //     msg.channel.send(`<@${msg.author.id}> tiene ${points} gpoints <:navigab:657774495515410443> `);
-    //   });
-    //   PointsController.getPoints(msg.author.id)
-    //   return 
-    // }
-
 
     if(validate_dimelo(msg.content)) {
       QuoteController.getRandomMessage().then((message)=>{

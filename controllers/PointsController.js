@@ -67,10 +67,8 @@ class PointsController {
           username: user.username
         }
       })
-      // console.log('userPoints',userPoints)
-      // console.log('usernames', usernames)
+
       const userNamesById = lodash.keyBy(usernames,'id')
-      // console.log('userNamesById', userNamesById)
 
       const message = 'Top 10 monses <:navigab:657774495515410443> : \n' + userPoints.map((user, idx)=>{
         return  `${idx+1}.- ${userNamesById[user.userId].username} tiene ${user.points} puntos.`

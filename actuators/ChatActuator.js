@@ -1,45 +1,33 @@
-import axios from 'axios';
-import RedisController from '../controllers/RedisController.js'
 
-
-const {URL_CHAT_API = 'http://localhost:11434/api/generate'} = process.env
+import ChatController from '../controllers/ChatController.js';
 
 export const ChatActuator = async (msg)=> {
   try {
     // get current model to get data from 
 
-    const model = await RedisController.getRedis('currentModelLLM')
-    if(!model) await RedisController.setRedis('currentModelLLM', 'llama3:8b')
-    // check if query is getting procesed 
-    let checkRunning = await RedisController.getRedis('runningChatBot')
+    const question = msg.content.trim().substring(10,msg.content.length).trim() || ''
 
-    if(checkRunning){
-      await msg.channel.send('``` A message is being generated, please wait ```')
-      return 
-    } 
-
-    await RedisController.setRedis('runningChatBot', 'arf', 60*2)
-
-    // start procesing query
-    
-    const question = msg.content.trim().substring(10,msg.content.length) || ''
     msg.channel.sendTyping()
-    const { data: joke } = await axios.post(URL_CHAT_API,
-      `{\n  "model": "${model}",\n  "prompt": "${question}",\n  "stream": false\n}`,
-      {
-        headers: { 
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      }
-    )
 
-    await RedisController.deleteRedis('runningChatBot')
-    // await msg.channel.send('```' + joke.response + '```')
-    await msg.reply({ content: '```' + joke.response + '```', fetchReply: true })
+    const response = await ChatController.getChatbotAnswer(question)
 
+    const discordChatResponse = await msg.reply({ content: '```' + response + '```', fetchReply: true })
+
+    const userMessage = {
+      message: question,
+      messageID: msg.id
+    }
+
+    const chatbotMessage = {
+      message: response,
+      messageID: discordChatResponse.id
+    }
     
+    const newchat = await ChatController.addNewChat(msg.author.id,userMessage, chatbotMessage)
+
   } catch (error) {
     console.log(error)
     await msg.channel.send('``` No quiero :c ```')
   }
 }
+
