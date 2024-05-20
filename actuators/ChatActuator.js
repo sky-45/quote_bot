@@ -3,27 +3,53 @@ import ChatController from '../controllers/ChatController.js';
 
 export const ChatActuator = async (msg)=> {
   try {
-    // get current model to get data from 
+    // new message
+    if(msg.content.startsWith('!monsebot ')) {
+      const question = msg.content.trim().substring(10,msg.content.length).trim() || ''
+      if(!question) return 
 
-    const question = msg.content.trim().substring(10,msg.content.length).trim() || ''
+      msg.channel.sendTyping()
+      const response = await ChatController.getChatbotAnswer(question)
+      const discordChatResponse = await msg.reply({ content: '```' + response + '```', fetchReply: true })
 
-    msg.channel.sendTyping()
+      const userMessage = {
+        message: question,
+        messageID: msg.id
+      }
+  
+      const chatbotMessage = {
+        message: response,
+        messageID: discordChatResponse.id
+      }
+      
+      const newchat = await ChatController.addNewChat(msg.author.id,userMessage, chatbotMessage)
 
-    const response = await ChatController.getChatbotAnswer(question)
-
-    const discordChatResponse = await msg.reply({ content: '```' + response + '```', fetchReply: true })
-
-    const userMessage = {
-      message: question,
-      messageID: msg.id
     }
+    else {
+      const checkExistThread = await ChatController.validateMessageIsChat(msg)
+      // old thread
+      if(checkExistThread) {
+        msg.channel.sendTyping()
 
-    const chatbotMessage = {
-      message: response,
-      messageID: discordChatResponse.id
-    }
+        const response = await ChatController.getChatbotThreadAnswer(checkExistThread.chats, msg.content)
+        const discordChatResponse = await msg.reply({ content: '```' + response + '```', fetchReply: true })
+
+        const userMessage = {
+          message: msg.content,
+          messageID: msg.id
+        }
     
-    const newchat = await ChatController.addNewChat(msg.author.id,userMessage, chatbotMessage)
+        const chatbotMessage = {
+          message: response,
+          messageID: discordChatResponse.id
+        }
+        
+        const updatedChat = await ChatController.updateChatThread(checkExistThread, userMessage, chatbotMessage)
+      }
+    }
+
+
+
 
   } catch (error) {
     console.log(error)

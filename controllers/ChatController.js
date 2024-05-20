@@ -31,6 +31,33 @@ class ChatController {
     }
   }
 
+  async updateChatThread(thread, userMessage, chatbotMessage) {
+    try {
+      // find used thread 
+
+      const newChat = [...thread.chats, {
+        userMessage: userMessage.message,
+        userMessageID: userMessage.messageID,
+        chatbotMessage: chatbotMessage.message,
+        chatbotMessageID: chatbotMessage.messageID
+      }]
+
+      const newThread = await ChatModel.findByIdAndUpdate(thread._id,
+        { $set: {
+          chats: newChat,
+          lastChatbotMessageID: chatbotMessage.messageID
+          }
+        },
+        { 'new': true }
+      ).lean()
+
+      return newThread
+      
+    } catch (error) {
+      console.log('error updateChatThread', error)
+    }
+  }
+
   async getChatbotAnswer(question) {
     try {
       const model = await this.getChatbotModel()
@@ -47,6 +74,68 @@ class ChatController {
       
     } catch (error) {
       console.log('error getting getChatbotAnswer', error)
+    }
+  }
+
+  async getChatbotThreadAnswer(threadChats, question) {
+    try {
+      const model = await this.getChatbotModel()
+
+      const messages = this.formatThread(threadChats, question)
+
+      const { data: { message: {content} } } = await axios.post(`${URL_CHAT_API}/api/chat`,
+        {
+          model,
+          messages,
+          stream: false
+        }
+      )
+
+      return content
+      
+    } catch (error) {
+      console.log('error getting getChatbotThreadAnswer', error)
+    }
+  }
+
+  formatThread(thread = [], newQuestion) {
+    try {
+
+      const messages = []
+
+      thread.forEach(({userMessage, chatbotMessage}) => {
+        messages.push({
+          role: 'user',
+          content: userMessage
+        },{
+          role: 'assistant',
+          content: chatbotMessage
+        })
+      })
+
+      messages.push({
+        role: 'user',
+        content: newQuestion
+      })
+      
+      return messages
+      
+    } catch (error) {
+      console.log('error formating thread', formatThread)
+    }
+  }
+
+  async validateMessageIsChat(msg){
+    try {
+
+      const thread = await ChatModel.findOne({
+        lastChatbotMessageID: msg.reference.messageId
+      }).lean()
+
+      return thread || undefined
+      
+    } catch (error) {
+      console.log('error validating chat thread', validateMessageIsChat)
     }
   }
 
@@ -106,9 +195,6 @@ class ChatController {
     }
   }
 
-  async updateChatThread() {
-
-  }
 }
 
 export default new ChatController()

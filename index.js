@@ -155,7 +155,7 @@ client.on(Events.MessageCreate, async msg => {
       await MeassureActuator(msg)
     
     // actuator of chatgpt
-    if(msg.content.startsWith('!monsebot '))
+    if(msg.content.startsWith('!monsebot ') || msg.reference?.messageId)
       await ChatActuator(msg)
 
     if(msg.content.startsWith('!addStream '))

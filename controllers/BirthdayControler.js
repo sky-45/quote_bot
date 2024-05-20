@@ -97,14 +97,14 @@ class BirthdayController {
     }
   }
   
-  formatAllBirthdays(birhtdayMessages) {
+  formatAllBirthdays(birhtdayMessages) { 
     try {
       const day = dayjs()
       const current_day = day.get('date')
       const current_month = day.get('month') + 1
 
       const finalMessage = 'Lista de cumpleaños: \n' + birhtdayMessages.map(elem=>{
-        // console.log(elem.user, elem.month, elem.day, current_month, current_day)
+
         if(elem.month > current_month || (elem.month == current_month && elem.day > current_day)) {
           return '    '+elem.user + ' cumplira ' + elem.years +' años el ' + elem.formatedDate
         }
