@@ -1,8 +1,17 @@
 
+
 import ChatController from '../controllers/ChatController.js';
 
 export const ChatActuator = async (msg)=> {
   try {
+
+    if(msg.content.startsWith('!monseimagen ')) {
+      const question = msg.content.trim().substring(13,msg.content.length).trim() || ''
+      if(!question) return 
+
+      msg.channel.sendTyping()
+      const response = await ChatController.getMultimodalImageAnswer(question)
+    }
     // new message
     if(msg.content.startsWith('!monsebot ')) {
       const question = msg.content.trim().substring(10,msg.content.length).trim() || ''
@@ -10,7 +19,19 @@ export const ChatActuator = async (msg)=> {
 
       msg.channel.sendTyping()
       const response = await ChatController.getChatbotAnswer(question)
-      const discordChatResponse = await msg.reply({ content: '```' + response + '```', fetchReply: true })
+
+      let discordChatResponse
+      if(response.length <= 1900)
+        discordChatResponse = await msg.reply({ content: '```' + response + '```', fetchReply: true })
+      else {
+        const rounds = Math.floor(response.length/1900)
+        for(let i=0; i<=rounds; i++) {
+          const text = response.substring(i*1900,(i+1)*1900)
+          discordChatResponse = await msg.reply({ content: '```' + text + '```', fetchReply: true })
+        }
+      }
+
+      // discordChatResponse = await msg.reply({ content: '```' + response + '```', fetchReply: true })
 
       const userMessage = {
         message: question,
@@ -32,7 +53,17 @@ export const ChatActuator = async (msg)=> {
         msg.channel.sendTyping()
 
         const response = await ChatController.getChatbotThreadAnswer(checkExistThread.chats, msg.content)
-        const discordChatResponse = await msg.reply({ content: '```' + response + '```', fetchReply: true })
+
+        let discordChatResponse
+        if(response.length <= 1900)
+          discordChatResponse = await msg.reply({ content: '```' + response + '```', fetchReply: true })
+        else {
+          const rounds = Math.floor(response.length/1900)
+          for(let i=0; i<=rounds; i++) {
+            const text = response.substring(i*1900,(i+1)*1900)
+            discordChatResponse = await msg.reply({ content: '```' + text + '```', fetchReply: true })
+          }
+        }
 
         const userMessage = {
           message: msg.content,

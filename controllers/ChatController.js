@@ -77,6 +77,22 @@ class ChatController {
     }
   }
 
+  async getMultimodalImageAnswer(question) {
+    try {
+      const model = await this.getChatbotModel('llava:7b')
+
+      const { data: { response } } = await axios.post(`${URL_CHAT_API}/api/generate`,
+        {
+          model,
+          prompt: question,
+          stream: false
+        }
+      )
+    } catch (error) {
+      console.log('error getting getMultimodalImageAnswer', error)
+    }
+  }
+
   async getChatbotThreadAnswer(threadChats, question) {
     try {
       const model = await this.getChatbotModel()
@@ -139,9 +155,12 @@ class ChatController {
     }
   }
 
-  async getChatbotModel() {
+  async getChatbotModel(newModel = undefined) {
     try {
-      let model = await RedisController.getRedis('currentModelLLM')
+      let model = newModel
+
+      if(!model)
+        model = await RedisController.getRedis('currentModelLLM')
 
       if(!model) {
         model = 'llama3:8b'
