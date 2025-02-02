@@ -210,7 +210,8 @@ class ChatController {
         stream: false
       })
 
-      return status == 'success'
+
+      return status == 'success' ? true : false
       
     } catch (error) {
       console.log('error pulling models', model)
