@@ -5,6 +5,13 @@ import ChatController from '../controllers/ChatController.js';
 export const ChatActuator = async (msg)=> {
   try {
 
+    if(msg.content.startsWith('!monsebotUpgrade ')) {
+      const new_bot = msg.content.trim().substring(16,msg.content.length).trim() || ''
+      console.log('new_bot', new_bot)
+      const new_model = await ChatController.getChatbotModel(new_bot)
+      await msg.reply({ content: '```' +'New model updated: '+ + new_model + '```', fetchReply: true })
+    }
+
     if(msg.content.startsWith('!monseimagen ')) {
       const question = msg.content.trim().substring(13,msg.content.length).trim() || ''
       if(!question) return 

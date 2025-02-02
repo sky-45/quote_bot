@@ -174,7 +174,10 @@ class ChatController {
       if(!isModelAvaliable) {
 
         const statusPull = await this.pullModel(model)
-        if(statusPull) return model
+        if(statusPull) {
+          await RedisController.setRedis('currentModelLLM', model)
+          return model
+        }
 
         throw new Error()
       }
