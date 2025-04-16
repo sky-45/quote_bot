@@ -1,6 +1,8 @@
 import axios from 'axios';
 import redis from 'redis'
 
+import { getCurrentTime} from '../utils/index.js'
+
 const {URL_REDIS = 'redis'} = process.env
 
 const redisClient = redis.createClient(6379, URL_REDIS) // { host: URL_REDIS, port: 6379 }
@@ -17,6 +19,7 @@ class RedisController {
   
       return value
     } catch (error) {
+      console.log(`[${getCurrentTime()}] Error RedisController-getRedis:`, error)
       return undefined
     }
   }
@@ -28,7 +31,7 @@ class RedisController {
 
       return {key, value}
     } catch (error) {
-      console.log('redis error',key,value)
+      console.log(`[${getCurrentTime()}] Error RedisController-setRedis:`, error)
       return undefined
     }
   }
@@ -40,6 +43,7 @@ class RedisController {
 
       return true
     } catch (error) {
+      console.log(`[${getCurrentTime()}] Error RedisController-deleteRedis:`, error)
       return undefined
     }
   }

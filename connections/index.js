@@ -17,6 +17,10 @@ dbBot.once('open', function() {
   console.log('MongoDB connection opened!')
 })
 
+dbBot.on('disconnected', () => {
+  console.log('connection disconnected');
+});
+
 export {
   dbBot
 }

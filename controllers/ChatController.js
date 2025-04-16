@@ -3,6 +3,8 @@ import lodash from 'lodash'
 import axios from 'axios';
 import { Error } from 'mongoose';
 import RedisController from './RedisController.js';
+import { getCurrentTime} from '../utils/index.js'
+
 
 // const {URL_CHAT_API = 'http://localhost:11434/api/generate'} = process.env
 const {URL_CHAT_API = 'http://localhost:11434'} = process.env
@@ -27,7 +29,7 @@ class ChatController {
 
       return chat
     } catch (error) {
-      console.log('error creating chat thread', error)
+      console.log(`[${getCurrentTime()}] Error ChatController-addNewChat:`, error)
     }
   }
 
@@ -54,7 +56,7 @@ class ChatController {
       return newThread
       
     } catch (error) {
-      console.log('error updateChatThread', error)
+      console.log(`[${getCurrentTime()}] Error ChatController-updateChatThread:`, error)
     }
   }
 
@@ -73,7 +75,7 @@ class ChatController {
       return response
       
     } catch (error) {
-      console.log('error getting getChatbotAnswer', error)
+      console.log(`[${getCurrentTime()}] Error ChatController-getChatbotAnswer:`, error)
     }
   }
 
@@ -85,11 +87,14 @@ class ChatController {
         {
           model,
           prompt: question,
-          stream: false
+          stream: false,
+          options: {
+            num_predict: 5
+          }
         }
       )
     } catch (error) {
-      console.log('error getting getMultimodalImageAnswer', error)
+      console.log(`[${getCurrentTime()}] Error ChatController-getMultimodalImageAnswer:`, error)
     }
   }
 
@@ -110,7 +115,7 @@ class ChatController {
       return content
       
     } catch (error) {
-      console.log('error getting getChatbotThreadAnswer', error)
+      console.log(`[${getCurrentTime()}] Error ChatController-getChatbotThreadAnswer:`, error)
     }
   }
 
@@ -137,7 +142,7 @@ class ChatController {
       return messages
       
     } catch (error) {
-      console.log('error formating thread', formatThread)
+      console.log(`[${getCurrentTime()}] Error ChatController-formatThread:`, error)
     }
   }
 
@@ -151,7 +156,8 @@ class ChatController {
       return thread || undefined
       
     } catch (error) {
-      console.log('error validating chat thread', validateMessageIsChat)
+      console.log(`[${getCurrentTime()}] Error ChatController-validateMessageIsChat:`, error)
+
     }
   }
 
@@ -184,7 +190,7 @@ class ChatController {
 
       return model
     } catch (error) {
-      console.log('error getting chatbot model')
+      console.log(`[${getCurrentTime()}] Error ChatController-getChatbotModel:`, error)
     }
   }
 
@@ -198,7 +204,7 @@ class ChatController {
       })
       
     } catch (error) {
-      console.log('error getting local models', error)
+      console.log(`[${getCurrentTime()}] Error ChatController-listLocalModels:`, error)
     }
   }
 
@@ -214,7 +220,7 @@ class ChatController {
       return status == 'success' ? true : false
       
     } catch (error) {
-      console.log('error pulling models', model)
+      console.log(`[${getCurrentTime()}] Error ChatController-pullModel:`, error)
     }
   }
 

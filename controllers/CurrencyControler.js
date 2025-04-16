@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Error } from 'mongoose';
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc.js'
-
+import { getCurrentTime} from '../utils/index.js'
 
 
 dayjs.extend(utc)
@@ -20,8 +20,7 @@ class CurrencyController {
       const EUR_exchange = await this.getExchangeEUR()
       return '```' + `TC SBS hoy ${fecha}: Compra = ${compra} - Venta = ${venta}, EUR = ${EUR_exchange}!` + '```' 
     } catch (error) {
-      console.log('error', error)
-
+      console.log(`[${getCurrentTime()}] Error CurrencyController-getCurrentExchangeUSD:`, error)
       return 'zzz - tipo de cambio murio'
     }
   }
@@ -59,7 +58,7 @@ class CurrencyController {
         return  this.getExhangeRate(COIN, newExchange.exchanges)[0]
       }
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error CurrencyController-getExchangeEUR:`, error)
 
       return 'zzz - tipo de cambio murio'
     }
@@ -107,7 +106,7 @@ class CurrencyController {
         return  '```' + `TC hoy ${day.format('YYYY-MM-DD')} de ${COIN} a PEN: ${exchangeRateLabel_1}, PEN a ${COIN}: ${exchangeRateLabel_2}!` + '```'
       }
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error CurrencyController-getCurrentExchangeOthers:`, error)
 
       return 'zzz - tipo de cambio murio'
     }
@@ -125,7 +124,7 @@ class CurrencyController {
 
       return cleanedData
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error CurrencyController-formatExchangeObj:`, error)
 
       return 'zzz - tipo de cambio murio'
     }
@@ -141,7 +140,7 @@ class CurrencyController {
       return [(rateToPEN.rate/rateToOther.rate).toFixed(3), (rateToOther.rate/rateToPEN.rate).toFixed(3)]
       
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error CurrencyController-getExhangeRate:`, error)
 
       return 'zzz - tipo de cambio murio'
     }

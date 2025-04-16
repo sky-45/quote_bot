@@ -1,5 +1,6 @@
 import PointsModel from '../models/Points.js'
 import lodash from 'lodash'
+import { getCurrentTime} from '../utils/index.js'
 
 class PointsController {
   async addPoints(userId, points = 1) {
@@ -25,7 +26,7 @@ class PointsController {
       return
 
     } catch (error) {
-      console.log('error adding poitns', error)
+      console.log(`[${getCurrentTime()}] Error PointsController-addPoints:`, error)
     }
   }
 
@@ -39,7 +40,7 @@ class PointsController {
       return user?.points || 0
 
     } catch (error) {
-      console.log('error getting gpoitns of ',userId)
+      console.log(`[${getCurrentTime()}] Error PointsController-getPoints:`, error)
     }
   }
 
@@ -51,7 +52,7 @@ class PointsController {
       return users || []
 
     } catch (error) {
-      console.log('error getting gpoitns of ',userId)
+      console.log(`[${getCurrentTime()}] Error PointsController-getAllUserPoints:`, error)
     }
   }
 
@@ -77,7 +78,7 @@ class PointsController {
       return message
       
     } catch (error) {
-      console.log('error formating points of users',userId)
+      console.log(`[${getCurrentTime()}] Error PointsController-formatPointsMessage:`, error)
     }
   }
 

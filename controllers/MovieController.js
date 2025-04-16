@@ -1,4 +1,5 @@
 import MovieModel from '../models/Movie.js'
+import { getCurrentTime} from '../utils/index.js'
 
 const statusFormat = {
   'watched': 'Vista',
@@ -21,7 +22,7 @@ class MovieController {
 
       return newMovie
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error MovieController-addMovie:`, error)
     }
   }
 
@@ -37,7 +38,7 @@ class MovieController {
 
       return formatedMessage
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error MovieController-getMovies:`, error)
     }
   }
 
@@ -56,7 +57,7 @@ class MovieController {
       }
 
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error MovieController-deleteMovie:`, error)
     }
   }
 

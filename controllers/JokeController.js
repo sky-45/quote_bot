@@ -1,4 +1,7 @@
 import axios from 'axios';
+import { getCurrentTime} from '../utils/index.js'
+
+
 
 const {URL_JOKE_API = 'http://localhost:3005'} = process.env
 
@@ -14,7 +17,7 @@ class JokeController {
 
       return  '```' + joke + '```'
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error JokeController-getRandomMonseJoke:`, error)
 
       return 'zzz - chistes monses desactivados temporalmente'
     }
@@ -31,7 +34,7 @@ class JokeController {
 
       return  '```' + setup + ' - ' + punchline + '```'
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error JokeController-getRandomJoke:`, error)
 
       return 'zzz - chistes desactivados temporalmente'
     }

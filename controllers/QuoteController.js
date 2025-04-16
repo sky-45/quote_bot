@@ -1,4 +1,6 @@
 import QuoteModel from '../models/Quote.js'
+import { getCurrentTime} from '../utils/index.js'
+
 
 class QuoteController {
   async getRandomMessage() {
@@ -7,7 +9,7 @@ class QuoteController {
 
       return randomQuote?.quote || 'zzz'
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error QuoteController-getRandomMessage:`, error)
     }
   }
 
@@ -19,7 +21,7 @@ class QuoteController {
       }
       await QuoteModel.create(quote)
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error QuoteController-addMessage:`, error)
     }
   }
 
@@ -29,7 +31,7 @@ class QuoteController {
 
       return quotes.map((el) => el?.quote)
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error QuoteController-getAllMessages:`, error)
     }
   }
 }

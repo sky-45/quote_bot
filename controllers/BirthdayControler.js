@@ -2,6 +2,9 @@ import BirthdayModel from '../models/Birthday.js'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc.js'
+
+import { getCurrentTime} from '../utils/index.js'
+
 dayjs.extend(utc)
 
 class BirthdayController {
@@ -21,7 +24,7 @@ class BirthdayController {
         }
       })
     } catch (error) {
-      console.log('error getting birthdays')
+      console.log(`[${getCurrentTime()}] Error getAllBirthdays:`, error)
       return []
     }
   }
@@ -31,9 +34,10 @@ class BirthdayController {
       const birthdays = await this.getTodayBirthdays();
 
     } catch (error) {
-      console.log('error getting birthdays')
+      console.log(`[${getCurrentTime()}] Error notifyBirthday:`, error)
     }
   }
+  
   async getTodayBirthdays() {
     try {
       const day = dayjs()
@@ -50,7 +54,7 @@ class BirthdayController {
         }
       })
     } catch (error) {
-      console.log('error getting birthdays')
+      console.log(`[${getCurrentTime()}] Error getTodayBirthdays:`, error)
       return []
     }
   }
@@ -70,7 +74,7 @@ class BirthdayController {
 
       return "Cumple de " + newBirthday.user +" agregado !"
     } catch (error) {
-      console.log('error agregando cumple', error)
+      console.log(`[${getCurrentTime()}] Error addBirthday:`, error)
       return "Error agregando cumpleaños, prueba denuevo monse !"
     }
   }
@@ -93,7 +97,7 @@ class BirthdayController {
       }
 
     } catch (error) {
-      throw Error
+      console.log(`[${getCurrentTime()}] Error parseBirhdayMessage:`, error)
     }
   }
   
@@ -116,7 +120,7 @@ class BirthdayController {
 
       return finalMessage
     } catch (error) {
-      
+      console.log(`[${getCurrentTime()}] Error formatAllBirthdays:`, error)
     }
   }
 }

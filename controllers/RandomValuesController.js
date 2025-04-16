@@ -1,6 +1,8 @@
 import axios from 'axios';
 import RedisController from './RedisController.js'
 
+import { getCurrentTime} from '../utils/index.js'
+
 class RandomValuesController {
   async getMeassureByID(userid) {
     try {
@@ -10,7 +12,7 @@ class RandomValuesController {
 
       return label 
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error RandomValuesController-getMeassureByID:`, error)
 
       return 'zzz - muy pequeño '
     }
@@ -31,19 +33,24 @@ class RandomValuesController {
       return size_redis
       
     } catch (error) {
-      console.log('error', error)
+      console.log(`[${getCurrentTime()}] Error RandomValuesController-getUserMeassure:`, error)
 
       return 'zzz - muy pequeño '
     }
   }
 
   getLabelMeMide(size){
-    let num = (typeof size == 'string') ? Number(size) : size
-    if(num < 0) return 'Pa adentro!'
-    if(num == 0) return 'Fuera de este mundo D:'
-    if(num < 5) return 'Lo que importa es como lo uses crack !'
-    if(num < 10) return 'Chalón'
-    return 'Esa cosa debería de tener DNI'
+    try {
+      let num = (typeof size == 'string') ? Number(size) : size
+      if(num < 0) return 'Pa adentro!'
+      if(num == 0) return 'Fuera de este mundo D:'
+      if(num < 5) return 'Lo que importa es como lo uses crack !'
+      if(num < 10) return 'Chalón'
+      return 'Esa cosa debería de tener DNI'
+    } catch (error) {
+      console.log(`[${getCurrentTime()}] Error RandomValuesController-getLabelMeMide:`, error)
+    }
+
   }
 }
 

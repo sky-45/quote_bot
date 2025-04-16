@@ -4,3 +4,8 @@ export const validate_dimelo = (text) => {
   
   return dimelo_validator || expresamelo_validator
 }
+
+export const getCurrentTime = () => {
+  const now = new Date()
+  return now.toLocaleString()
+}

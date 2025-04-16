@@ -4,6 +4,7 @@ import { Error } from 'mongoose';
 import RedisController from './RedisController.js'
 import ChannelModel from '../models/Channels.js';
 
+import { getCurrentTime} from '../utils/index.js'
 
 const { CLIENT_ID, CLIENT_SECRET } = process.env
 
@@ -41,8 +42,7 @@ class TwitchController {
       return access_token
 
     } catch (error) {
-      console.log('Error updating Token')
-      throw new Error()
+      console.log(`[${getCurrentTime()}] Error TwitchController-updateAccessToken:`, error)
     }
   }
 
@@ -70,8 +70,7 @@ class TwitchController {
       }
 
     } catch (error) {
-      console.log('Error getting channels')
-      throw new Error()
+      console.log(`[${getCurrentTime()}] Error TwitchController-getChannel:`, error)
     }
   }
 
@@ -93,8 +92,7 @@ class TwitchController {
       return 'Canal ' + query + ' añadido correctamente !'
 
     } catch (error) {
-      console.log('Error adding channels')
-      // throw new Error()
+      console.log(`[${getCurrentTime()}] Error TwitchController-addChannel:`, error)
     }
   }
 
@@ -104,8 +102,7 @@ class TwitchController {
 
       return followedChannels
     } catch (error) {
-      console.log('Error getting channels')
-      throw new Error()
+      console.log(`[${getCurrentTime()}] Error TwitchController-getFollowedChannels:`, error)
     }
   }
 
@@ -121,7 +118,7 @@ class TwitchController {
      
       return liveChannels
     } catch (error) {
-      console.log('Error getting live channels')
+      console.log(`[${getCurrentTime()}] Error TwitchController-getLiveChannels:`, error)
       return []
     }
   }
@@ -148,7 +145,7 @@ class TwitchController {
       }
 
     } catch (error) {
-      console.log('Error getting live channels')
+      console.log(`[${getCurrentTime()}] Error TwitchController-notifyChannelsLive:`, error)
       return []
     }
   }
