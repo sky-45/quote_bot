@@ -42,7 +42,7 @@ class TwitchController {
       return access_token
 
     } catch (error) {
-      console.log(`[${getCurrentTime()}] Error TwitchController-updateAccessToken:`, error)
+      console.log(`[${getCurrentTime()}] Error TwitchController-updateAccessToken:`, error?.message)
     }
   }
 
@@ -70,13 +70,50 @@ class TwitchController {
       }
 
     } catch (error) {
-      console.log(`[${getCurrentTime()}] Error TwitchController-getChannel:`, error)
+      console.log(`[${getCurrentTime()}] Error TwitchController-getChannel:`, error?.message)
+    }
+  }
+
+  async getChannels(channels, live_only=false) {
+    try {
+      const access_token = await this.getAccessToken()
+
+      const live_info_channels = await Promise.all(channels.map((channel) => {
+        return axios.get('https://api.twitch.tv/helix/search/channels',{
+          headers:{
+            'client-id': CLIENT_ID,
+            'Authorization': `Bearer ${access_token}`
+          },
+          params:{
+            query: channel,
+            live_only,
+            first: 1
+          }
+        })
+      }))
+
+      const channels_status = live_info_channels.map((channel_info) => {
+        const {data:{ data: streams= [] }} = channel_info
+        
+        if(streams.length == 0) return false 
+
+        return {
+          channelName: streams[0].broadcaster_login,
+          is_live: streams[0].is_live
+        }
+      })
+
+      return channels_status.filter((el) =>el !== false)
+
+    } catch (error) {
+      console.log(`[${getCurrentTime()}] Error TwitchController-getChannels:`, error?.message)
+      return []
     }
   }
 
   async addChannel(query, addedBy) { 
     try {
-      const {channelName} = await this.getChannel(query)
+      const [{channelName} ={}] = await this.getChannels([query])
       const existingChannels = await this.getFollowedChannels()
       const exists = existingChannels?.filter(el => el.name == query) || []
       
@@ -112,7 +149,7 @@ class TwitchController {
       const liveChannels = []
 
       for(const followChannel of followedChannels){
-        const {is_live} = await this.getChannel(followChannel.name)
+        const [{is_live} = {}] = await this.getChannels([followChannel.name])
         if(is_live) liveChannels.push(followChannel.name)
       }
      
